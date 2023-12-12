@@ -1,11 +1,12 @@
 from django.test import TestCase
-from recipes.models import Recipe, Category, User
+from recipes.models import Category, Recipe, User
+
 
 class RecipeTestBase(TestCase):
     def setUp(self) -> None:
         return super().setUp()
 
-    def make_category(self, name="Category"):
+    def make_category(self, name='Category'):
         return Category.objects.create(name=name)
 
     def make_author(
@@ -26,8 +27,8 @@ class RecipeTestBase(TestCase):
 
     def make_recipe(
         self,
-        category=None,
-        author=None,
+        category_data=None,
+        author_data=None,
         title='Recipe Title',
         description='Recipe Description',
         slug='recipe-slug',
@@ -39,15 +40,15 @@ class RecipeTestBase(TestCase):
         preparation_steps_is_html=False,
         is_published=True,
     ):
-        if category is None:
-            category = {}
+        if category_data is None:
+            category_data = {}
 
-        if author is None:
-            author = {}
+        if author_data is None:
+            author_data = {}
 
         return Recipe.objects.create(
-            category=self.make_category(**category),
-            author=self.make_author(**author),
+            category=self.make_category(**category_data),
+            author=self.make_author(**author_data),
             title=title,
             description=description,
             slug=slug,
