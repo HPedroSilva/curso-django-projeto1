@@ -49,6 +49,21 @@ class RecipeViewsTest(RecipeTestBase):
             response.content.decode('utf-8')
         )
 
+    def test_recipe_home_view_pagination_is_correct(self):
+        # Need several recipes for this test
+        qty_recipes = 25
+        for i in range(1, qty_recipes + 1):
+            self.make_recipe(author_data={'username': f'user-{i}'}, slug=f'recipe-{i}')
+
+        response1 = self.client.get(f"{reverse('recipes:home')}?page=1")
+        self.assertEqual(len(response1.context['recipes']), 9)
+        
+        response2 = self.client.get(f"{reverse('recipes:home')}?page=2")
+        self.assertEqual(len(response2.context['recipes']), 9)
+        
+        response3 = self.client.get(f"{reverse('recipes:home')}?page=3")
+        self.assertEqual(len(response3.context['recipes']), 7)
+
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(
             reverse('recipes:category', kwargs={'category_id': 1000})
