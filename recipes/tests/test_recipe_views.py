@@ -62,7 +62,7 @@ class RecipeViewsTest(RecipeTestBase):
             paginator = recipes.paginator
 
             self.assertEqual(paginator.num_pages, 5)
-            
+
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(
             reverse('recipes:category', kwargs={'category_id': 1000})
