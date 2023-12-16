@@ -3,6 +3,7 @@ from recipes import views
 
 from .test_recipe_base import RecipeTestBase
 
+from unittest.mock import patch
 
 class RecipeViewsTest(RecipeTestBase):
     def test_recipe_home_view_function_is_correct(self):
@@ -55,15 +56,13 @@ class RecipeViewsTest(RecipeTestBase):
         for i in range(1, qty_recipes + 1):
             self.make_recipe(author_data={'username': f'user-{i}'}, slug=f'recipe-{i}')
 
-        response1 = self.client.get(f"{reverse('recipes:home')}?page=1")
-        self.assertEqual(len(response1.context['recipes']), 9)
-        
-        response2 = self.client.get(f"{reverse('recipes:home')}?page=2")
-        self.assertEqual(len(response2.context['recipes']), 9)
-        
-        response3 = self.client.get(f"{reverse('recipes:home')}?page=3")
-        self.assertEqual(len(response3.context['recipes']), 7)
+        with patch('recipes.views.PER_PAGE', new=5):
+            response = self.client.get(reverse('recipes:home'))
+            recipes = response.context['recipes']
+            paginator = recipes.paginator
 
+            self.assertEqual(paginator.num_pages, 5)
+            
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(
             reverse('recipes:category', kwargs={'category_id': 1000})
