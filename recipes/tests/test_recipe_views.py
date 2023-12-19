@@ -185,3 +185,9 @@ class RecipeViewsTest(RecipeTestBase):
 
         self.assertIn(recipe1, response_both.context['recipes'])
         self.assertIn(recipe2, response_both.context['recipes'])
+
+    def test_invalid_page_query_uses_page_one(self):
+        self.make_recipe()
+        url = reverse('recipes:home') + '?page=1a'
+        response = self.client.get(url)
+        self.assertEqual(response.context['recipes'].number, 1)
