@@ -120,7 +120,7 @@ def dashboard_recipe_edit(request, id):
     )
 
     if form.is_valid():
-        recipe = form.save(commit=True)
+        recipe = form.save(commit=False)
 
         recipe.author = request.user
         recipe.is_published = False
@@ -138,4 +138,28 @@ def dashboard_recipe_edit(request, id):
         {
             "form": form,
         },
+    )
+
+
+@login_required(login_url="authors:login")
+def dashboard_recipe_new_view(request):
+    form = AuthorRecipeForm(data=request.POST or None, files=request.FILES or None)
+
+    if form.is_valid():
+        recipe: Recipe = form.save(commit=False)
+
+        recipe.author = request.user
+        recipe.is_published = False
+        recipe.preparation_steps_is_html = False
+        recipe.slug = recipe.title.replace(" ", "-")
+
+        recipe.save()
+
+        messages.success(request, "Your recipe was saved successfully")
+        return redirect(reverse("authors:dashboard_recipe_edit", args=(recipe.id,)))
+
+    return render(
+        request,
+        "authors/pages/dashboard_recipe.html",
+        {"form": form, "form_action": reverse("authors:dashboard_recipe_new")},
     )
