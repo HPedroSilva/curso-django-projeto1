@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from recipes.models import Recipe
 
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, AuthorRecipeForm
 
 
 def register_view(request):
@@ -92,3 +92,20 @@ def dashboard(request):
         context={
             'recipes': recipes,
         })
+
+@login_required(login_url='authors:login')
+def dashboard_recipe_edit(request, id):
+    recipe = Recipe.objects.filter(
+        author=request.user,
+        is_published=False,
+        pk=id,
+    ).first()
+
+    if not recipe:
+        raise Http404()
+
+    form = AuthorRecipeForm(data=request.POST or None, instance=recipe)
+
+    return render(request, 'authors/pages/dashboard_recipe.html', {
+        'form': form,
+    })
