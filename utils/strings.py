@@ -1,4 +1,4 @@
-def is_positive_nuber(value):
+def is_positive_number(value):
     try:
         number_string = float(value)
     except ValueError:

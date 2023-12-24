@@ -68,6 +68,15 @@ h6 {
   font-family: var(--font-headings);
 }
 
+img {
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
 .container {
   max-width: 144rem;
   margin: 0 auto;
@@ -428,7 +437,7 @@ h6 {
   max-width: 64rem;
   text-align: left;
   padding: var(--spacing-gutter-medium);
-  margin: auto;
+  margin: 0 auto;
 }
 
 .authors-dashboard-container h3,
@@ -446,15 +455,6 @@ h6 {
 
 .left {
   text-align: left;
-}
-
-img {
-  width: 100%;
-}
-
-a {
-  color: var(--color-primary);
-  text-decoration: none;
 }
 
 .m-x {
