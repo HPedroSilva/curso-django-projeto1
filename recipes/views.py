@@ -3,7 +3,7 @@ import os
 from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from utils.pagination import make_pagination
 from recipes.models import Recipe
@@ -110,6 +110,30 @@ class RecipeListViewCategory(RecipeListViewBase):
         context.update(
             {
                 "title": f"{category_name} - Category | ",
+            }
+        )
+        return context
+
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    context_object_name = "recipe"
+    template_name = "recipes/pages/recipe-view.html"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_published=True)
+
+        if not queryset:
+            raise Http404()
+
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(
+            {
+                "is_detail_page": True,
             }
         )
         return context
