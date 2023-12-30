@@ -21,4 +21,9 @@ urlpatterns = [
         views.RecipeDetailAPI.as_view(),
         name="recipe_api_v1_detail",
     ),
+    path(
+        "recipes/tag/<slug:slug>/",
+        views.RecipeListViewTag.as_view(),
+        name="tag",
+    ),
 ]

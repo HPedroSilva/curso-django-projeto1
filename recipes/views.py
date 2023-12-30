@@ -38,6 +38,8 @@ class RecipeListViewBase(ListView):
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
         queryset = queryset.filter(is_published=True)
+        queryset = queryset.select_related("author", "category")
+        queryset = queryset.prefetch_related("tag")
 
         return queryset
 
@@ -166,3 +168,21 @@ class RecipeDetailAPI(RecipeDetailView):
         del recipe_dict["preparation_steps_is_html"]
 
         return JsonResponse(recipe_dict, safe=False)
+
+
+class RecipeListViewTag(RecipeListViewBase):
+    template_name = "recipes/pages/tag.html"
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(tag__slug=self.kwargs.get("slug", ""))
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(
+            {
+                "title": f"{self.kwargs.get('slug')} - Tag | ",
+            }
+        )
+        return context
