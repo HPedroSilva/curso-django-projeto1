@@ -5,6 +5,8 @@ from django.http.response import Http404, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from django.forms.models import model_to_dict
+from django.utils import translation
+from django.utils.translation import gettext as _
 
 from utils.pagination import make_pagination
 from recipes.models import Recipe
@@ -48,8 +50,12 @@ class RecipeListViewBase(ListView):
         page_obj, pagination_range = make_pagination(
             self.request, context.get("recipes"), PER_PAGE
         )
+
+        html_language = translation.get_language()
+
         context.update(
             {
+                "html_language": html_language,
                 "recipes": page_obj,
                 "pagination_range": pagination_range,
             }
@@ -110,9 +116,10 @@ class RecipeListViewCategory(RecipeListViewBase):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         category_name = context.get("recipes")[0].category.name
+        category_translation = _("Category")
         context.update(
             {
-                "title": f"{category_name} - Category | ",
+                "title": f"{category_name} - {category_translation} | ",
             }
         )
         return context
