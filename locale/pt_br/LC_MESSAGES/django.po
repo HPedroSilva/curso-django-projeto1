@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-10 20:27-0300\n"
+"POT-Creation-Date: 2022-02-19 05:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: base_templates/global/partials/header.html:8
+#: recipes/models.py:36
+msgid "Title"
+msgstr "Título"
+
+#: recipes/models.py:89
+msgid "Recipe"
+msgstr "Receita"
+
+#: recipes/models.py:90
 msgid "Recipes"
 msgstr "Receitas"
 
-#: recipes/templates/recipes/partials/recipe.html:61
+#: recipes/templates/recipes/partials/recipe.html:63
 msgid "Preparation"
 msgstr "Preparo"
 
-#: recipes/templates/recipes/partials/recipe.html:67
+#: recipes/templates/recipes/partials/recipe.html:69
 msgid "Servings"
 msgstr "Porções"
 
-#: recipes/templates/recipes/partials/recipe.html:78
-msgid "see more..."
-msgstr "ver mais..."
+#: recipes/templates/recipes/partials/recipe.html:80
+msgid "read more"
+msgstr "ler mais"
 
-#: recipes/views.py:119
+#: recipes/views.py:93
 msgid "Category"
 msgstr "Categoria"

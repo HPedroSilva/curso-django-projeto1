@@ -25,28 +25,30 @@
   const closeMenu = () => {
     buttonShowMenu.classList.add(buttonShowMenuVisibleClass);
     menuContainer.classList.add(menuHiddenClass);
-  }
+  };
+
   const showMenu = () => {
     buttonShowMenu.classList.remove(buttonShowMenuVisibleClass);
     menuContainer.classList.remove(menuHiddenClass);
-  }
+  };
 
-  if(buttonCloseMenu) {
+  if (buttonCloseMenu) {
     buttonCloseMenu.removeEventListener('click', closeMenu);
     buttonCloseMenu.addEventListener('click', closeMenu);
   }
-  if(buttonShowMenu) {
-    buttonShowMenu.removeEventListener('click', showMenu);
+
+  if (buttonShowMenu) {
+    buttonCloseMenu.removeEventListener('click', showMenu);
     buttonShowMenu.addEventListener('click', showMenu);
   }
 })();
 
 (() => {
-  const authorsLogoutLinks = document.querySelectorAll(".authors-logout-link");
-  const formLogout = document.querySelector(".form-logout");
+  const authorsLogoutLinks = document.querySelectorAll('.authors-logout-link');
+  const formLogout = document.querySelector('.form-logout');
 
-  for(const link of authorsLogoutLinks) {
-    link.addEventListener("click", (e) => {
+  for (const link of authorsLogoutLinks) {
+    link.addEventListener('click', (e) => {
       e.preventDefault();
       formLogout.submit();
     });

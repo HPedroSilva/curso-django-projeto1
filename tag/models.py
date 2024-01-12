@@ -11,15 +11,14 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            rand_letters = "".join(
+            rand_letters = ''.join(
                 SystemRandom().choices(
                     string.ascii_letters + string.digits,
                     k=5,
                 )
             )
-            self.slug = slugify(f"{self.name}-{rand_letters}")
+            self.slug = slugify(f'{self.name}-{rand_letters}')
         return super().save(*args, **kwargs)
 
-    # Create your models here.
     def __str__(self):
         return self.name
