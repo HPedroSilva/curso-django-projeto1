@@ -23,15 +23,22 @@ class Category(models.Model):
 
 class RecipeManager(models.Manager):
     def get_published(self):
-        return self.filter(
-            is_published=True
-        ).annotate(
-            author_full_name=Concat(
-                F('author__first_name'), Value(' '),
-                F('author__last_name'), Value(' ('),
-                F('author__username'), Value(')'),
+        return (
+            self.filter(is_published=True)
+            .annotate(
+                author_full_name=Concat(
+                    F('author__first_name'),
+                    Value(' '),
+                    F('author__last_name'),
+                    Value(' ('),
+                    F('author__username'),
+                    Value(')'),
+                )
             )
-        ).order_by('-id')
+            .order_by('-id')
+            .select_related('category', 'author')
+            .prefetch_related('tags')
+        )
 
 
 class Recipe(models.Model):
@@ -49,14 +56,16 @@ class Recipe(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
     cover = models.ImageField(
-        upload_to='recipes/covers/%Y/%m/%d/', blank=True, default='')
+        upload_to='recipes/covers/%Y/%m/%d/', blank=True, default=''
+    )
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, null=True, blank=True,
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         default=None,
     )
-    author = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True
-    )
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     tags = models.ManyToManyField(Tag, blank=True, default='')
 
     def __str__(self):
@@ -102,15 +111,11 @@ class Recipe(models.Model):
     def clean(self, *args, **kwargs):
         error_messages = defaultdict(list)
 
-        recipe_from_db = Recipe.objects.filter(
-            title__iexact=self.title
-        ).first()
+        recipe_from_db = Recipe.objects.filter(title__iexact=self.title).first()
 
         if recipe_from_db:
             if recipe_from_db.pk != self.pk:
-                error_messages['title'].append(
-                    'Found recipes with the same title'
-                )
+                error_messages['title'].append('Found recipes with the same title')
 
         if error_messages:
             raise ValidationError(error_messages)

@@ -1,35 +1,19 @@
 from django.urls import path
 
-from . import views
+from recipes import views
 
 app_name = 'recipes'
 
 urlpatterns = [
-    path(
-        '',
-        views.RecipeListViewHome.as_view(),
-        name="home"
-    ),
-    path(
-        'recipes/search/',
-        views.RecipeListViewSearch.as_view(),
-        name="search"
-    ),
-    path(
-        'recipes/tags/<slug:slug>/',
-        views.RecipeListViewTag.as_view(),
-        name="tag"
-    ),
+    path('', views.RecipeListViewHome.as_view(), name="home"),
+    path('recipes/search/', views.RecipeListViewSearch.as_view(), name="search"),
+    path('recipes/tags/<slug:slug>/', views.RecipeListViewTag.as_view(), name="tag"),
     path(
         'recipes/category/<int:category_id>/',
         views.RecipeListViewCategory.as_view(),
-        name="category"
+        name="category",
     ),
-    path(
-        'recipes/<int:pk>/',
-        views.RecipeDetail.as_view(),
-        name="recipe"
-    ),
+    path('recipes/<int:pk>/', views.RecipeDetail.as_view(), name="recipe"),
     path(
         'recipes/api/v1/',
         views.RecipeListViewHomeApi.as_view(),
@@ -44,5 +28,9 @@ urlpatterns = [
         'recipes/theory/',
         views.theory,
         name='theory',
-    )
+    ),
+    path('recipes/api/v2/', views.recipe_api_list, name='recipes_api_v2'),
+    path(
+        'recipes/api/v2/<int:pk>', views.recipe_api_detail, name='recipes_api_v2_detail'
+    ),
 ]
