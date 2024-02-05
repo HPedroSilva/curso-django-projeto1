@@ -1,7 +1,10 @@
 from rest_framework import serializers
 
+from django.core.exceptions import ValidationError
+
 from tag.models import Tag
 from recipes.models import Recipe
+from authors.validators import AuthorRecipeValidator
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -24,6 +27,12 @@ class RecipeSerializer(serializers.ModelSerializer):
             'preparation',
             'tag_objects',
             'tag_links',
+            'preparation_time',
+            'preparation_time_unit',
+            'servings',
+            'servings_unit',
+            'preparation_steps',
+            'cover',
         ]
 
     public = serializers.BooleanField(source='is_published', read_only=True)
@@ -41,3 +50,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_preparation(self, recipe):
         return f'{recipe.preparation_time} {recipe.preparation_time_unit}'
+
+    def validate(self, attrs):
+        super_validate = super().validate(attrs)
+        AuthorRecipeValidator(attrs, ErrorClass=ValidationError)
+        return super_validate
