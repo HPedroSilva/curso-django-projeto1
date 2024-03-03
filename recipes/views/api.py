@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import status
 
 from recipes.models import Recipe
 from tag.models import Tag
@@ -50,6 +51,15 @@ class RecipeAPIv2ViewSet(ModelViewSet):
                 IsOwner(),
             ]
         return super().get_permissions()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=request.user)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 @api_view()
