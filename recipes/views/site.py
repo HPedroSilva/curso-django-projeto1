@@ -21,16 +21,9 @@ def theory(request, *args, **kwargs):
     recipes = Recipe.objects.get_published()
     number_of_recipes = recipes.aggregate(number=Count('id'))
 
-    context = {
-        'recipes': recipes,
-        'number_of_recipes': number_of_recipes['number']
-    }
+    context = {'recipes': recipes, 'number_of_recipes': number_of_recipes['number']}
 
-    return render(
-        request,
-        'recipes/pages/theory.html',
-        context=context
-    )
+    return render(request, 'recipes/pages/theory.html', context=context)
 
 
 class RecipeListViewBase(ListView):
@@ -51,9 +44,7 @@ class RecipeListViewBase(ListView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         page_obj, pagination_range = make_pagination(
-            self.request,
-            ctx.get('recipes'),
-            PER_PAGE
+            self.request, ctx.get('recipes'), PER_PAGE
         )
 
         html_language = translation.get_language()
@@ -79,10 +70,7 @@ class RecipeListViewHomeApi(RecipeListViewBase):
         recipes = self.get_context_data()['recipes']
         recipes_list = recipes.object_list.values()
 
-        return JsonResponse(
-            list(recipes_list),
-            safe=False
-        )
+        return JsonResponse(list(recipes_list), safe=False)
 
 
 class RecipeListViewCategory(RecipeListViewBase):
@@ -92,18 +80,18 @@ class RecipeListViewCategory(RecipeListViewBase):
         ctx = super().get_context_data(*args, **kwargs)
         category_translation = _('Category')
 
-        ctx.update({
-            'title': f'{ctx.get("recipes")[0].category.name} - '
-            f'{category_translation} | '
-        })
+        ctx.update(
+            {
+                'title': f'{ctx.get("recipes")[0].category.name} - '
+                f'{category_translation} | '
+            }
+        )
 
         return ctx
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        qs = qs.filter(
-            category__id=self.kwargs.get('category_id')
-        )
+        qs = qs.filter(category__id=self.kwargs.get('category_id'))
 
         if not qs:
             raise Http404()
@@ -121,18 +109,18 @@ class RecipeListViewTag(RecipeListViewBase):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        page_title = Tag.objects.filter(
-            slug=self.kwargs.get('slug', '')
-        ).first()
+        page_title = Tag.objects.filter(slug=self.kwargs.get('slug', '')).first()
 
         if not page_title:
             page_title = 'No recipes found'
 
         page_title = f'{page_title} - Tag |'
 
-        ctx.update({
-            'page_title': page_title,
-        })
+        ctx.update(
+            {
+                'page_title': page_title,
+            }
+        )
 
         return ctx
 
@@ -149,8 +137,7 @@ class RecipeListViewSearch(RecipeListViewBase):
         qs = super().get_queryset(*args, **kwargs)
         qs = qs.filter(
             Q(
-                Q(title__icontains=search_term) |
-                Q(description__icontains=search_term),
+                Q(title__icontains=search_term) | Q(description__icontains=search_term),
             )
         )
         return qs
@@ -159,11 +146,13 @@ class RecipeListViewSearch(RecipeListViewBase):
         ctx = super().get_context_data(*args, **kwargs)
         search_term = self.request.GET.get('q', '')
 
-        ctx.update({
-            'page_title': f'Search for "{search_term}" |',
-            'search_term': search_term,
-            'additional_url_query': f'&q={search_term}',
-        })
+        ctx.update(
+            {
+                'page_title': f'Search for "{search_term}" |',
+                'search_term': search_term,
+                'additional_url_query': f'&q={search_term}',
+            }
+        )
 
         return ctx
 
@@ -181,9 +170,7 @@ class RecipeDetail(DetailView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
 
-        ctx.update({
-            'is_detail_page': True
-        })
+        ctx.update({'is_detail_page': True})
 
         return ctx
 
@@ -197,8 +184,9 @@ class RecipeDetailAPI(RecipeDetail):
         recipe_dict['updated_at'] = str(recipe.updated_at)
 
         if recipe_dict.get('cover'):
-            recipe_dict['cover'] = self.request.build_absolute_uri() + \
-                recipe_dict['cover'].url[1:]
+            recipe_dict['cover'] = (
+                self.request.build_absolute_uri() + recipe_dict['cover'].url[1:]
+            )
         else:
             recipe_dict['cover'] = ''
 
