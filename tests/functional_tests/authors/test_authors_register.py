@@ -1,13 +1,11 @@
+import pytest
 from .base import AuthorsBaseTest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
+@pytest.mark.functional_test
 class AuthorsRegiterTest(AuthorsBaseTest):
-    def get_by_placeholder(self, web_element, placeholder):
-        return web_element.find_element(
-            By.XPATH, f'//input[@placeholder="{placeholder}"]'
-        )
 
     def fill_form_dummy_data(self, form):
         inputs = form.find_elements(By.TAG_NAME, 'input')
